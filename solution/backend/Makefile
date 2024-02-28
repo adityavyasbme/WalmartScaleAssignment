@@ -12,4 +12,5 @@ deactivate-env:
 install-requirements:
 	pip install -r requirements.txt
 
-	
+run-test:
+	python -m unittest discover
