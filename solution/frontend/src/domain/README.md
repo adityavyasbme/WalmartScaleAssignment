@@ -1,0 +1,1 @@
+This folder contains core business logic, including model definitions and data preprocessing.
