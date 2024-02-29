@@ -29,6 +29,7 @@ You can also refer Makefile for extra commands
 
 The project is organized into several key directories, each serving a specific function:
 ```bash
+
 solution/
 │
 ├── docker-compose.yml       # Docker Compose file to orchestrate containers
