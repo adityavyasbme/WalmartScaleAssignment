@@ -22,7 +22,8 @@ def get_data() -> Tuple[DataFrame, DataFrame, int]:
     and desired model level.
     """
     raw_calendar_df = load_csv_data('./data/calendar.csv')
-    raw_sales_df = load_csv_data('./data/sales_train.csv').iloc[0:100]
+    # TODO: Remove this iloc
+    raw_sales_df = load_csv_data('./data/sales_train.csv').iloc[0:10000]
     raw_sell_prices_df = load_csv_data('./data/sell_prices.csv')
 
     validate.validate(raw_calendar_df, raw_sales_df, raw_sell_prices_df)
