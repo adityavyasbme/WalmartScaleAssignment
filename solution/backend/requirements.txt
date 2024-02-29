@@ -1,9 +1,15 @@
-keras==2.14.0
-numpy==1.23.5
-pandas==1.5.3
-plotly==5.9.0
-scikit-learn==1.2.1
-tensorboard==2.14.1
-tensorflow==2.14.0
+keras
+numpy
+pandas
+plotly
+scikit-learn
+# tensorboard==2.14.1
+# tensorflow==2.14.0
 # developer
-pytest==8.0.2
+pytest
+nbformat
+fastapi
+uvicorn
+PyYAML
+pydantic
+scikeras[tensorflow]

@@ -1,3 +1,7 @@
 .vs
 *\__pycache__
 *\.pytest_cache
+*\data
+*\results
+.vscode
+solution/backend/test.ipynb

@@ -1,7 +1,6 @@
-keras==2.14.0
-numpy==1.23.5
-pandas==1.5.3
-plotly==5.9.0
-scikit-learn==1.2.1
-tensorboard==2.14.1
-tensorflow==2.14.0
+streamlit==1.25.0
+st-pages==0.4.5
+streamlit-extras==0.3.2
+pydantic==2.3.0
+requests==2.26.0
+requests-toolbelt==0.9.1
