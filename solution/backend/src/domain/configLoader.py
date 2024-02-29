@@ -12,13 +12,13 @@ router = APIRouter()
 def find_model_level(model_levels: List[ModelLevel],
                      level_id: int) -> Optional[ModelLevel]:
     for model_level in model_levels:
-        if model_level.level_id == level_id:
+        if model_level.LevelId == level_id:
             return model_level
     return None  # Return None if the model level is not found
 
 
 @router.get("/api/modelLevelConfig")
-async def load_config() -> Dict:
+def load_config() -> Dict:
     config_dict = None
     with open('config.yaml', 'r') as file:
         config_dict = yaml.safe_load(file)

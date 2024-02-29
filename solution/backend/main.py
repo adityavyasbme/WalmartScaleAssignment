@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from src.infrastructure import healthCheck
 from src.domain import configLoader
+from src.application import workflow
 
 app = FastAPI(
     title="Backend APIs For Walmart Scale Up Project",
@@ -10,5 +11,8 @@ app = FastAPI(
     # openapi_url="/api/openapi.json"
 )
 
+
 app.include_router(healthCheck.router)
 app.include_router(configLoader.router)
+app.include_router(workflow.router)
+workflow.run_multiple_model()
