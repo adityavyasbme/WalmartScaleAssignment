@@ -18,4 +18,7 @@ While I have made significant progress, there are numerous avenues for optimizat
 
 7. **Integration with MLFlow**: Time constraints limited the integration of MLFlow, a platform that would allow for model logging, versioning, and deployment. Future integration would streamline model management and deployment processes.
 
+8. **Hyperparameter Optimization**: Optimal settings for epochs, batch sizes, and other hyperparameters have not been extensively recommended or tested due to the preliminary nature of the dataset. In general practice, the number of epochs should be chosen based on the specific characteristics of the data and the learning behavior observed during training. A common rule of thumb is to use a validation set to monitor the model's performance and employ techniques like early stopping to prevent overfitting. Adjustments to batch size and learning rates should also be considered in tandem to strike a balance between learning efficiency and computational resource constraints. Further fine-tuning and experimentation with these hyperparameters are essential once more representative data becomes available, ensuring that the model is adequately optimized for the best performance.
+
+
 Thank you again for this opportunity. I'm eager to discuss these potential optimizations further and explore how we can collaboratively bring this project to new heights.
