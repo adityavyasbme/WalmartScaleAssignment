@@ -11,6 +11,17 @@ router = APIRouter()
 
 def find_model_level(model_levels: List[ModelLevel],
                      level_id: int) -> Optional[ModelLevel]:
+    """
+    Searches for a model level definition by level ID.
+
+    Args:
+        model_levels (List[ModelLevel]): A list of ModelLevel objects.
+        level_id (int): The ID of the model level to find.
+
+    Returns:
+        Optional[ModelLevel]: The found ModelLevel object, or None if not
+        found.
+    """
     for model_level in model_levels:
         if model_level.LevelId == level_id:
             return model_level
@@ -19,6 +30,12 @@ def find_model_level(model_levels: List[ModelLevel],
 
 @router.get("/api/modelLevelConfig")
 def load_config() -> Dict:
+    """
+    Loads the configuration from a YAML file.
+
+    Returns:
+        Dict: A dictionary containing the loaded configuration.
+    """
     config_dict = None
     with open('config.yaml', 'r') as file:
         config_dict = yaml.safe_load(file)
@@ -26,6 +43,18 @@ def load_config() -> Dict:
 
 
 def load_config_model() -> ModelLevel:
+    """
+    Loads the model level configuration from the YAML file and returns the
+    corresponding ModelLevel object.
+
+    Returns:
+        ModelLevel: The ModelLevel object corresponding to the configured
+        model level.
+
+    Raises:
+        Exception: If the model_level is not found in config.yaml or if it's 
+        not within the expected range.
+    """
     config_dict = load_config()
     # Check if 'model_level' parameter is present in the config
     if 'model_level' not in config_dict:

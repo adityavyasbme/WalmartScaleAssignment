@@ -3,16 +3,52 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.pipeline import Pipeline
 import pandas as pd
 import numpy as np
+from typing import Tuple, List
+from pandas import DataFrame
 
 
 class MergeExogenousFeatures(BaseEstimator, TransformerMixin):
-    def __init__(self, calendar_df):
+    """
+    A transformer that merges exogenous features from a calendar DataFrame
+    into a sales DataFrame.
+    """
+
+    def __init__(self, calendar_df: DataFrame):
+        """
+        Initializes the transformer with the calendar dataframe.
+
+        Args:
+            calendar_df (DataFrame): The calendar DataFrame containing
+            exogenous features.
+        """
         self.calendar_df = calendar_df
 
-    def fit(self, X, y=None):
-        return self  # Nothing to fit
+    def fit(self, X: DataFrame, y: None = None) -> 'MergeExogenousFeatures':
+        """
+        Fit method for the transformer. Since this transformer does not learn
+        from the data, it just returns itself.
 
-    def transform(self, X):
+        Args:
+            X (DataFrame): The input data to transform.
+            y (None, optional): Ignored. Defaults to None.
+
+        Returns:
+            MergeExogenousFeatures: The transformer itself.
+        """
+        return self
+
+    def transform(self, X: DataFrame) -> DataFrame:
+        """
+        Transforms the sales data by merging it with exogenous features
+        from the calendar data.
+
+        Args:
+            X (DataFrame): The sales data DataFrame to transform.
+
+        Returns:
+            DataFrame: The transformed sales DataFrame with exogenous
+            features merged.
+        """
         # Ensure the calendar_df has necessary flags
         self.calendar_df['event_1_flag'] = self.calendar_df[
             'event_name_1'].notna(
@@ -39,7 +75,25 @@ class MergeExogenousFeatures(BaseEstimator, TransformerMixin):
         return sales_t_exo_df
 
 
-def get_cols(sales_df, n_forecast):
+def get_cols(
+        sales_df: DataFrame,
+        n_forecast: int) -> Tuple[
+            List[str], List[str], List[str], DataFrame, DataFrame]:
+    """
+    Prepares column lists and splits the sales DataFrame into training
+    and validation sets.
+
+    Args:
+        sales_df (DataFrame): The sales DataFrame to process.
+        n_forecast (int): The number of days to forecast (used to split
+        the data).
+
+    Returns:
+        Tuple[List[str], List[str], List[str], DataFrame, DataFrame]: Tuple
+        containing lists of training columns,
+        fixed columns, validation columns, and the training and validation
+        DataFrames.
+    """
     train_df = sales_df.iloc[:, :-n_forecast].copy()
     valid_df = sales_df.iloc[:, -n_forecast:].copy()
 
@@ -52,8 +106,25 @@ def get_cols(sales_df, n_forecast):
     return (train_df_cols, fixed_cols, valid_df_cols, train_df, valid_df)
 
 
-def get_sequences(data_array, input_slice_start_min, input_slice_start_max,
-                  n_training, n_products_stores):
+def get_sequences(data_array: np.ndarray,
+                  input_slice_start_min: int,
+                  input_slice_start_max: int,
+                  n_training: int,
+                  n_products_stores: int) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Generates input and output sequences for training and validation.
+
+    Args:
+        data_array (np.ndarray): The data array to generate sequences from.
+        input_slice_start_min (int): The starting index for generating
+        sequences.
+        input_slice_start_max (int): The ending index for generating sequences.
+        n_training (int): Number of days used for training.
+        n_products_stores (int): Number of product/store combinations.
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: Input (X) and output (y) sequences.
+    """
 
     X = []
     y = []

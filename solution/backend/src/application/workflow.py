@@ -1,16 +1,26 @@
-from src.infrastructure.dataLoader import load_csv_data
-from src.domain import (validate, transform,
-                        preProcessing, trainAndEvaluate, configLoader)
-from fastapi import APIRouter
-from concurrent.futures import ProcessPoolExecutor, as_completed
 import os
 import json
 import re
+from typing import Tuple, Dict, Any, List
+from pandas import DataFrame
+from fastapi import APIRouter
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from src.infrastructure.dataLoader import load_csv_data
+from src.domain import (validate, transform, preProcessing,
+                        trainAndEvaluate, configLoader)
 
 router = APIRouter()
 
 
-def get_data():
+def get_data() -> Tuple[DataFrame, DataFrame, int]:
+    """
+    Load and preprocess data, then return transformed data frames and 
+    desired model level.
+
+    Returns:
+    Tuple[DataFrame, DataFrame, int]: Calendar data frame, sales data frame, 
+    and desired model level.
+    """
     raw_calendar_df = load_csv_data('./data/calendar.csv')
     raw_sales_df = load_csv_data('./data/sales_train.csv').iloc[0:100]
     raw_sell_prices_df = load_csv_data('./data/sell_prices.csv')
@@ -21,7 +31,11 @@ def get_data():
     return calender, sales, desired_model_level
 
 
-def run_multiple_model():
+def run_multiple_model() -> None:
+    """
+    Load configuration, get data, and execute model training in 
+    parallel processes.
+    """
     config_dict = configLoader.load_config()
     epochs = config_dict['epochs']
     calender_df, sales_df, desired_model_level = get_data()
@@ -49,7 +63,19 @@ def run_multiple_model():
                 print(f'Generated an exception: {exc}')
 
 
-def run_model(group_name, sales_df, calendar_df, epochs):
+def run_model(group_name: str,
+              sales_df: DataFrame,
+              calendar_df: DataFrame,
+              epochs: int) -> None:
+    """
+    Process data, train and evaluate model, and save results.
+
+    Parameters:
+    - group_name: The name of the group for which the model is being run.
+    - sales_df: DataFrame containing sales data.
+    - calendar_df: DataFrame containing calendar data.
+    - epochs: Number of epochs to train the model.
+    """
     print(f"Running {group_name}")
     try:
         sales_df.drop(columns=['for_all'], inplace=True)
@@ -99,7 +125,13 @@ def run_model(group_name, sales_df, calendar_df, epochs):
 
 
 @router.get("/api/modelNames")
-def fetch_model_names():
+def fetch_model_names() -> List[str]:
+    """
+    Fetch and return the names of all model groups from the results directory.
+
+    Returns:
+    List[str]: A list containing model group names.
+    """
     # Directory where results JSON files are stored
     results_dir = './results'
     # List all files in the results directory
@@ -113,7 +145,16 @@ def fetch_model_names():
 
 
 @router.post("/api/modelData")
-def fetch_model_store(key):
+def fetch_model_store(key) -> Dict[Any, Any]:
+    """
+    Fetch and return model results for a specific key.
+
+    Parameters:
+    - key: Name of Group
+
+    Returns:
+    Dict[str, Any]: A dictionary containing model group names.
+    """
     # Directory where results JSON files are stored
     results_dir = './results/'
 

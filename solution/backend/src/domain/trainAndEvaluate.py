@@ -5,9 +5,28 @@ from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping, TensorBoard
 import pandas as pd
 import numpy as np
+from pandas import DataFrame
+from numpy import ndarray
+from typing import Tuple
+from sklearn.preprocessing import MinMaxScaler
 
 
-def build_baseline_model(n_products_stores, n_training, n_outputs):
+def build_baseline_model(n_products_stores: int,
+                         n_training: int,
+                         n_outputs: int) -> Sequential:
+    """
+    Builds and compiles a baseline model with a CNN+LSTM architecture.
+
+    Parameters:
+    - n_products_stores (int): Number of products/stores features in the
+    dataset.
+    - n_training (int): Number of days used for training.
+    - n_outputs (int): Number of output features (usually the same as
+    n_products_stores).
+
+    Returns:
+    - Sequential: Compiled Keras model ready for training.
+    """
 
     baseline_model = Sequential()
 
@@ -51,8 +70,32 @@ def build_baseline_model(n_products_stores, n_training, n_outputs):
     return baseline_model
 
 
-def evaluate_model(model, X_valid, scaler, n_training, n_outputs,
-                   valid_df_cols, fixed_cols, valid_df_og):
+def evaluate_model(model: Sequential,
+                   X_valid: ndarray,
+                   scaler: MinMaxScaler,
+                   n_training: int,
+                   n_outputs: int, valid_df_cols: list,
+                   fixed_cols: list, valid_df_og: DataFrame) -> DataFrame:
+    """
+    Evaluates the model on the validation set and returns predictions as a 
+    DataFrame.
+
+    Parameters:
+    - model (Sequential): Trained Keras model.
+    - X_valid (ndarray): Validation input features.
+    - scaler (MinMaxScaler): Scaler used for inverse transformation of 
+    predictions.
+    - n_training (int): Number of days used for training.
+    - n_outputs (int): Number of output features.
+    - valid_df_cols (list): List of column names for the validation DataFrame.
+    - fixed_cols (list): List of fixed column names to be included in the 
+    output DataFrame.
+    - valid_df_og (DataFrame): Original validation DataFrame for merging 
+    fixed columns.
+
+    Returns:
+    - DataFrame: Validation predictions merged with fixed columns.
+    """
 
     y_valid_pred = []
     for X in X_valid:
@@ -73,10 +116,40 @@ def evaluate_model(model, X_valid, scaler, n_training, n_outputs,
     return y_valid_pred_df
 
 
-def train_and_evaluate(n_outputs, X_train, y_train, X_valid, y_valid,
-                       epochs, batch_size, n_training, train_df_og, scaler,
-                       valid_df_cols, fixed_cols,
-                       log_directory="../results/baseline/tb_logs"):
+def train_and_evaluate(
+        n_outputs: int, X_train: ndarray,
+        y_train: ndarray, X_valid: ndarray, y_valid: ndarray,
+        epochs: int, batch_size: int,
+        n_training: int, train_df_og: DataFrame,
+        scaler: MinMaxScaler,
+        valid_df_cols: list, fixed_cols: list,
+        log_directory: str = "../results/baseline/tb_logs") -> Tuple[
+            Sequential, DataFrame]:
+    """
+    Trains the baseline model and evaluates it on the validation set.
+
+    Parameters:
+    - n_outputs (int): Number of output features.
+    - X_train (ndarray): Training input features.
+    - y_train (ndarray): Training target features.
+    - X_valid (ndarray): Validation input features.
+    - y_valid (ndarray): Validation target features.
+    - epochs (int): Number of epochs for training.
+    - batch_size (int): Batch size for training.
+    - n_training (int): Number of days used for training.
+    - train_df_og (DataFrame): Original training DataFrame for 
+    logging purposes.
+    - scaler (MinMaxScaler): Scaler used for the inverse transformation 
+    of predictions.
+    - valid_df_cols (list): List of column names for the validation DataFrame.
+    - fixed_cols (list): List of fixed column names to be included in the 
+    output DataFrame.
+    - log_directory (str): Directory for TensorBoard log files.
+
+    Returns:
+    - Tuple[Sequential, DataFrame]: Trained model and DataFrame containing
+    validation predictions.
+    """
     baseline_model = build_baseline_model(n_products_stores=n_outputs,
                                           n_training=n_training,
                                           n_outputs=n_outputs)
